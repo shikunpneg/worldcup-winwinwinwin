@@ -1,0 +1,57 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+*.egg
+.env
+venv/
+.venv/
+*.so
+
+# Node
+node_modules/
+frontend/node_modules/
+frontend/dist/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git worktrees / temp
+.claude/
+.git-rewrite/
+.qoder/
+.vercel/
+
+# Debug / Temp scripts
+_*.py
+_*.txt
+_*.sh
+check_*.py
+test_*.py
+debug_*.py
+verify_*.py
+deploy_*.py
+deploy_*.sh
+setup_*.py
+create_*.py
+raw_*.py
+find_*.py
+try_*.py
+invoke_*.py
+download_*.py
+investigate_*.py
+fix_*.py
+build_*.py
+*.bak
+*.fixed
+
+# Screenshots
+*.png
+*.jpeg
+*.jpg
+
+# Docs (exclude all .md except README)
+*.md
+!README.md
