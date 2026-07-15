@@ -53,3 +53,11 @@ build_*.py
 # Docs (exclude all .md except README)
 *.md
 !README.md
+
+# Build artifacts
+.vercel-tmp/
+linux_wheels/
+scf_handler.py
+worldcup_data/
+*.pkl
+frontend/tsconfig.tsbuildinfo
