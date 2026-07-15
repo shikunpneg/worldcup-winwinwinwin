@@ -1215,6 +1215,47 @@ def _merge_historical_data(matches_df: pd.DataFrame) -> pd.DataFrame:
 
 
 # ============================================================
+#  DATA SNAPSHOT (for migration / API-free deployment)
+# ============================================================
+
+SNAPSHOT_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "snapshot.pkl")
+
+
+def _save_snapshot(data: dict):
+    """Save full data snapshot (matches, team_stats, cards, players) for migration."""
+    try:
+        os.makedirs(os.path.dirname(SNAPSHOT_PATH), exist_ok=True)
+        save_data = {k: v for k, v in data.items() if isinstance(v, (pd.DataFrame, dict, list))}
+        # Convert DataFrames to dicts for pickle compatibility
+        for k, v in save_data.items():
+            if isinstance(v, pd.DataFrame):
+                save_data[k] = v.to_dict(orient="records")
+        with open(SNAPSHOT_PATH, "wb") as f:
+            pickle.dump(save_data, f)
+        print(f"    [SNAPSHOT] Saved full data snapshot to {SNAPSHOT_PATH}")
+    except Exception as e:
+        print(f"    [WARN] Failed to save snapshot: {e}")
+
+
+def _load_snapshot() -> Optional[dict]:
+    """Load snapshot if API is unavailable."""
+    if not os.path.exists(SNAPSHOT_PATH):
+        return None
+    try:
+        with open(SNAPSHOT_PATH, "rb") as f:
+            raw = pickle.load(f)
+        # Convert back to DataFrames
+        for k in ["matches", "team_stats", "cards", "players"]:
+            if k in raw and isinstance(raw[k], list):
+                raw[k] = pd.DataFrame(raw[k])
+        print(f"    [SNAPSHOT] Loaded data snapshot ({list(raw.keys())})")
+        return raw
+    except Exception as e:
+        print(f"    [WARN] Failed to load snapshot: {e}")
+        return None
+
+
+# ============================================================
 #  STARTUP EVENT
 # ============================================================
 
@@ -1238,12 +1279,22 @@ def startup():
 
         print("\n[1] Loading data (fast path)...")
         skill = WorldCupDataSkill()
-        data = skill.collect_all()
-        matches_df = data["matches"]
-        team_stats_df = data["team_stats"]
+        try:
+            data = skill.collect_all()
+            matches_df = data["matches"]
+            team_stats_df = data["team_stats"]
+        except Exception as e:
+            print(f"    [WARN] API unavailable ({e}), trying snapshot...")
+            snapshot_data = _load_snapshot()
+            if snapshot_data is None:
+                raise
+            matches_df = snapshot_data.get('matches', pd.DataFrame())
+            team_stats_df = snapshot_data.get('team_stats', pd.DataFrame())
 
         # Patch known incorrect API results
         matches_df = _patch_match_results(matches_df)
+        if 'data' in dir():
+            _save_snapshot(data)
 
         # Save original 2026 data for bracket display; use merged data for training
         matches_df_2026 = matches_df.copy()
@@ -1275,12 +1326,23 @@ def startup():
     # 2. Full training path (first run)
     print("\n[1] Collecting data...")
     skill = WorldCupDataSkill()
-    data = skill.collect_all()
-    matches_df = data["matches"]
-    team_stats_df = data["team_stats"]
-    market_values = skill.fetch_market_values()
+    try:
+        data = skill.collect_all()
+        matches_df = data["matches"]
+        team_stats_df = data["team_stats"]
+        market_values = skill.fetch_market_values()
+    except Exception as e:
+        print(f"    [WARN] API unavailable ({e}), trying snapshot...")
+        matches_df = _load_snapshot()
+        if matches_df is None:
+            raise
+        team_stats_df = skill._compute_team_stats(matches_df)
+        market_values = {}
     matches_df = _patch_match_results(matches_df)
     matches_df_2026 = matches_df.copy()
+    # Save snapshot for future migration
+    if 'data' in dir():
+        _save_snapshot(data)
 
     # Merge historical data for training only
     training_df = _merge_historical_data(matches_df)
