@@ -1,0 +1,82 @@
+﻿---
+description: 记录本项目中反复出现的踩坑经验，每次修改代码前必须阅读
+globs: *.py
+---
+# FIFA 项目踩坑备忘录
+
+## 一、PowerShell 环境陷阱 (Windows 25H2)
+
+### 1.1 语句分隔符
+- ❌ && 不可用（PowerShell 不支持）
+- ✅ 用 ; 分隔多条命令
+
+### 1.2 Python -c 多行代码
+- ❌ 多行 python -c \"...\" 会在换行处被 PowerShell 截断
+- ❌ python -c \"...\" 中包含 { 或 } 会被 PowerShell 解释为 ScriptBlock
+- ✅ 用 @\"...\"@ | Out-File heredoc 写入 .py 文件，然后执行文件
+- ✅ 如果必须用 -c，用单行 + chr(34) 替代 \"、chr(123) 替代 {
+
+### 1.3 重定向
+- ❌ 2>nul 在 PowerShell 中是无效语法
+- ✅ 用 2> + ` $null 或 2>&1
+- ❌ command > file.txt 2>&1 中的 > 会被 PowerShell 解释为本地文件写入
+- ✅ 用 Python 的 subprocess 或 paramiko 处理远程输出
+
+### 1.4 文件编码
+- ❌ PowerShell 重定向输出到文件可能编码为 UTF-16，utf-8 读取会看到 \0 字节
+- ✅ 读取文件时指定 encoding='utf-16' 或先用 ile[:4] == b'\\xff\\xfe' 检测 UTF-16 BOM
+- ✅ 写入文件时用 -Encoding utf8 参数
+
+### 1.5 文件创建/修改工具不可靠
+- ❌ Write 工具和 SearchReplace 工具在本系统上报告成功但文件实际未创建
+- ✅ 唯一可靠的文件创建方式: @\"...\"@ | Out-File -FilePath path -Encoding utf8
+- ✅ 写入后立刻单独运行文件确认创建成功
+
+## 二、SSH/Paramiko 操作
+
+### 2.1 Shell 状态污染
+- ⚠️ 每次执行 paramiko SSH 命令后，PowerShell 终端状态会被污染
+- ❌ 污染后 @\"\"@ heredoc 和其他多行命令会失败（\"rmdir\" 错误）
+- ✅ 每次 SSH 操作前/后运行 Get-Date 重置终端状态
+- ✅ 不要在同一个命令中既写入 heredoc 脚本又运行它；分成两步
+
+### 2.2 远程文件读取
+- ❌ cat 整个大文件效率低且有编码风险
+- ✅ 用 sed -n 'N,Mp' /path 精确读取目标行
+- ✅ 用 grep -n 查找行号再读取
+
+### 2.3 数据库与模型
+- ⚠️ 服务器有两个进程同时运行时，预测轮数会翻倍（5→10）
+- ✅ 修改代码后必须 kill 全部 uvicorn 进程再重启
+- ✅ API 返回 health 确认模型就绪后再测试
+
+## 三、日期处理 (核心业务逻辑)
+
+### 3.1 日期格式一致性
+- ⚠️ 比赛 datetime 字段格式是 MM/DD/YYYY HH:MM
+- ❌ str(dt)[:10] 得到 MM/DD/YYYY，但 selected_date 是 YYYY-MM-DD
+- ✅ 比较前必须统一格式，用 datetime.strptime() 解析再 strftime('%Y-%m-%d')
+- ✅ 字符串比较 MM/DD/YYYY < YYYY-MM-DD 会产生错误结果（如 \"07/14/2026\" < \"2026-07-10\" 为 True）
+
+### 3.2 赛后Winner判定
+- ⚠️ 带 ELO 模型的预测在 live 0-0 比赛时 winner_map 为空
+- ✅ 用 ELO 评分作为 fallback 填充缺失的 winner_map 条目
+- ✅ _resolve_team() 需要检查所有来源：完成比赛→预测→live→ELO
+
+## 四、修改代码的流程纪律
+
+### 4.1 修改前确认
+- [ ] 用 heredoc 方式读取服务器当前代码确认状态
+- [ ] 检查 API 响应确认当前行为
+- [ ] 确认问题根因（不要假设）
+
+### 4.2 修改后验证
+- [ ] 验证代码语法（python -c \"import ast; ast.parse(open('file').read())\"）
+- [ ] 重启服务
+- [ ] 用 WebFetch 或 API 调用验证改动生效（不要只看本地文件）
+- [ ] 对比修改前后的 API 响应
+
+### 4.3 多步修复
+- [ ] 每完成一步修复就验证一步
+- [ ] 不要在一次操作中塞入多个修复
+- [ ] 修复顺序：先恢复损坏代码 → 再修复逻辑 → 最后优化

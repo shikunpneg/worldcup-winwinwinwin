@@ -19,9 +19,7 @@ frontend/dist/
 Thumbs.db
 
 # Git worktrees / temp
-.claude/
 .git-rewrite/
-.qoder/
 .vercel/
 
 # Debug / Temp scripts

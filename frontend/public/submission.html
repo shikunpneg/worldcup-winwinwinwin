@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qoder码力星期四·世界杯挑战赛 — 世界杯冠军预测 Agent</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif;background:#050b17;color:#e8e8e8;line-height:1.8}
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px 20px;background:radial-gradient(ellipse 1200px 500px at 50% 0%,rgba(212,175,55,0.15) 0%,transparent 65%),linear-gradient(180deg,#030811,#070f22 30%,#0f1a2e 60%,#030811)}
+.hero::before{content:'🏆';font-size:80px;margin-bottom:20px;filter:drop-shadow(0 0 30px rgba(212,175,55,0.4));animation:float 3s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.hero h1{font-size:clamp(28px,4vw,52px);font-weight:900;background:linear-gradient(135deg,#f0c040,#d4af37,#f0c040);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:12px}
+.hero .subtitle{font-size:clamp(14px,1.5vw,20px);color:#8899bb;max-width:600px;margin-bottom:30px}
+.hero .btn{padding:14px 40px;border-radius:12px;border:none;font-size:16px;font-weight:700;cursor:pointer;display:inline-block;background:linear-gradient(135deg,#d4af37,#f0c040);color:#030811;box-shadow:0 4px 20px rgba(212,175,55,0.3);text-decoration:none}
+.hero .btn:hover{transform:translateY(-2px);box-shadow:0 6px 30px rgba(212,175,55,0.5)}
+.hero .url{color:#8899bb;font-size:14px;margin-top:20px}
+.hero .url a{color:#f0c040;text-decoration:none}
+.container{max-width:960px;margin:0 auto;padding:60px 24px}
+.section{margin-bottom:60px}
+.section-title{font-size:clamp(20px,2.5vw,32px);font-weight:800;margin-bottom:30px;padding-bottom:12px;border-bottom:2px solid rgba(212,175,55,0.3)}
+.card{background:linear-gradient(135deg,rgba(15,26,46,0.8),rgba(10,20,40,0.6));border:1px solid rgba(58,90,138,0.3);border-radius:16px;padding:28px;margin-bottom:20px}
+.card h3{color:#f0c040;font-size:18px;font-weight:700;margin-bottom:12px}
+.card p,.card li{color:#b0c0d8;font-size:15px;line-height:1.9}
+.card ul{padding-left:20px}
+.card li{margin-bottom:6px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:700px){.grid-2{grid-template-columns:1fr}}
+.arch{background:rgba(15,26,46,0.5);border:1px solid #2a4a7a;border-radius:12px;padding:24px;font-family:'Consolas',monospace;font-size:13px;line-height:2;color:#b0c0d8;overflow-x:auto}
+.arch .hl{color:#f0c040}
+table{width:100%;border-collapse:collapse;margin:16px 0}
+th,td{padding:12px 16px;text-align:left;border-bottom:1px solid rgba(58,90,138,0.3);font-size:14px}
+th{color:#f0c040;font-weight:700;background:rgba(15,26,46,0.5)}
+td{color:#b0c0d8}
+.footer{text-align:center;padding:40px;color:#556688;font-size:13px;border-top:1px solid rgba(58,90,138,0.2)}
+code{background:rgba(212,175,55,0.1);padding:2px 8px;border-radius:4px;color:#f0c040;font-size:13px}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>世界杯预测 2026</h1>
+  <p class="subtitle">基于 Elo + 贝叶斯优化 + 历史数据 + 赔率校准的冠军预测系统</p>
+  <a class="btn" href="http://8.148.66.127:8000/" target="_blank">访问在线系统 →</a>
+  <p class="url">🔗 <a href="http://8.148.66.127:8000/">http://8.148.66.127:8000/</a></p>
+</div>
+
+<div class="container">
+
+<section class="section">
+<h2 class="section-title">🔗 在线地址</h2>
+<div class="card">
+  <p style="font-size:24px;font-weight:700;color:#f0c040">👉 <a href="http://8.148.66.127:8000/" style="color:#f0c040">http://8.148.66.127:8000/</a></p>
+  <p style="color:#8899bb;margin-top:8px">部署于阿里云 ECS，评审期间可稳定访问。内置数据快照功能支持快速迁移。</p>
+</div>
+</section>
+
+<section class="section">
+<h2 class="section-title">🛠️ 系统架构</h2>
+<div class="arch">
+<span class="hl">前端 (React + Vite + d3.js)</span><br>
+BracketTree (SVG赛程树) | FeatureTooltip | EditDropdown | DanmakuOverlay<br>
+│ HTTP/JSON API<br>
+<span class="hl">后端 (FastAPI + Python)</span><br>
+/api/today | /api/panorama | /api/simulate | /api/teams<br>
+│<br>
+<span class="hl">预测引擎 (trainable_elo.py)</span><br>
+Elo → Softmax → Poisson → Dixon-Coles → 赔率校准<br>
+Bayesian优化: K=7.9 HA=7 spread=0.008 | 1068场训练 | bet365校准<br>
+│<br>
+<span class="hl">数据采集层</span><br>
+worldcup26.ir API (实时) | jfjelstul 964场历史 | football-data.co.uk赔率
+</div>
+</section>
+
+<section class="section">
+<h2 class="section-title">🧠 预测模型</h2>
+<table>
+<tr><th>模块</th><th>参数</th><th>说明</th></tr>
+<tr><td>Elo评分</td><td>K=7.9, HA=7</td><td>贝叶斯优化，拒绝原默认K=40</td></tr>
+<tr><td>Softmax</td><td>spread=0.008, draw=0.956</td><td>平局概率校准显著提升</td></tr>
+<tr><td>Poisson</td><td>avg_goals=2.908</td><td>0-8球比分概率分布</td></tr>
+<tr><td>历史数据</td><td>1068场</td><td>1930-2022全部世界杯+2026</td></tr>
+<tr><td>赔率校准</td><td>α=0.7</td><td>bet365开盘赔率融合</td></tr>
+<tr><td>决赛优化</td><td>进球x0.7</td><td>Poisson best_score比分</td></tr>
+<tr><td>点球预测</td><td>89.7%</td><td>246场淘汰赛统计</td></tr>
+</table>
+</section>
+
+<section class="section">
+<h2 class="section-title">⭐ 创新与创意</h2>
+<div class="grid-2">
+<div class="card"><h3>🔬 多阶段模型融合</h3><p>Elo+Softmax+Poisson+DC四阶段推理，每步可追溯。贝叶斯优化自动搜索最优参数。</p></div>
+<div class="card"><h3>📚 历史数据预训练</h3><p>964场历史比赛+104场2026年，Elo评分基于数十年表现。CV准确率52.1%超过基线48.4%。</p></div>
+<div class="card"><h3>🎲 赔率校准</h3><p>bet365开盘赔率融合(α=0.7)，接近市场共识。支持纯统计vs赔率增强双模式。</p></div>
+<div class="card"><h3>✏️ What-If推演</h3><p>编辑球队+伤停模拟(0-50%)，一键重新预测全赛程。探索世界杯的更多可能性。</p></div>
+</div>
+</section>
+
+<section class="section">
+<h2 class="section-title">🏆 冠军预测</h2>
+<div class="card" style="text-align:center;border-color:rgba(212,175,55,0.5)">
+  <p style="font-size:36px;font-weight:900;color:#f0c040">🏆 阿根廷 🏆</p>
+  <p style="font-size:18px;color:#b0c0d8">决赛：西班牙 vs 阿根廷 1-1 → 阿根廷点球胜</p>
+</div>
+<table>
+<tr><th>轮次</th><th>对阵</th><th>预测</th><th>胜者</th></tr>
+<tr><td>半决赛</td><td>法国 vs 西班牙</td><td>0-2(实际)</td><td>西班牙</td></tr>
+<tr><td>半决赛</td><td>英格兰 vs 阿根廷</td><td>1-1</td><td>阿根廷(点球)</td></tr>
+<tr><td>三四名</td><td>法国 vs 英格兰</td><td>2-1</td><td>法国</td></tr>
+<tr><td style="background:rgba(212,175,55,0.1);color:#f0c040;font-weight:700">决赛</td><td>西班牙 vs 阿根廷</td><td>1-1</td><td>🏆阿根廷(点球)</td></tr>
+</table>
+</section>
+
+<section class="section">
+<h2 class="section-title">✅ 加分项：阿里云ECS部署</h2>
+<div class="card" style="border-color:rgba(212,175,55,0.5)">
+  <p>已部署于阿里云ECS (Ubuntu 20.04, 2C4G)，systemd+Uvicorn管理。</p>
+  <ul style="margin-top:8px">
+    <li>公网地址：<a href="http://8.148.66.127:8000/" style="color:#f0c040">http://8.148.66.127:8000/</a></li>
+    <li>自动重启，内置数据快照</li>
+    <li>迁移命令：<code>git clone && pip install && npm run build && uvicorn backend_api.main:app</code></li>
+  </ul>
+</div>
+</section>
+
+<section class="section">
+<h2 class="section-title">🤖 Qoder 开发记录</h2>
+<div class="card">
+  <p>本项目全程使用 Qoder(Claude Code)开发：</p>
+  <ul style="margin-top:8px">
+    <li><strong>架构设计</strong> — 系统架构、数据流、API设计 — Qoder对话记录</li>
+    <li><strong>模型实现</strong> — Elo评分、贝叶斯优化、赔率校准 — 代码生成</li>
+    <li><strong>前端开发</strong> — 赛程树、弹幕、编辑面板 — 组件生成</li>
+    <li><strong>部署调试</strong> — ECS部署、性能优化、数据修正 — 对话调试</li>
+  </ul>
+  <p style="color:#556688;font-size:12px;margin-top:12px">完整Qoder工作界面截图和对话记录可应评审要求提供。</p>
+</div>
+</section>
+
+</div>
+
+<div class="footer">
+<p>Qoder码力星期四·世界杯冠军预测Agent开发挑战赛 — 提交时间：2026年7月</p>
+</div>
+
+</body>
+</html>

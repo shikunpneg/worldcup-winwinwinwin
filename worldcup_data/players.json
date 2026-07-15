@@ -1,0 +1,530 @@
+{
+  "top_scorers": {
+    "Mohamed Hany": {
+      "goals": 2,
+      "teams": [
+        "Belgium",
+        "Australia"
+      ]
+    },
+    "Emam Ashour": {
+      "goals": 2,
+      "teams": [
+        "Egypt"
+      ]
+    },
+    "Anthony Elanga": {
+      "goals": 2,
+      "teams": [
+        "Sweden"
+      ]
+    },
+    "“J. Quiñones 9'”": {
+      "goals": 1,
+      "teams": [
+        "Mexico"
+      ]
+    },
+    "”R. Jiménez 67'”": {
+      "goals": 1,
+      "teams": [
+        "Mexico"
+      ]
+    },
+    "L. Krejčí": {
+      "goals": 1,
+      "teams": [
+        "Czech Republic"
+      ]
+    },
+    "C. Larin": {
+      "goals": 1,
+      "teams": [
+        "Canada"
+      ]
+    },
+    "Jovo Lukić": {
+      "goals": 1,
+      "teams": [
+        "Bosnia and Herzegovina"
+      ]
+    },
+    "Maurício": {
+      "goals": 1,
+      "teams": [
+        "Paraguay"
+      ]
+    },
+    "J. McGinn": {
+      "goals": 1,
+      "teams": [
+        "Scotland"
+      ]
+    },
+    "V. Júnior": {
+      "goals": 1,
+      "teams": [
+        "Brazil"
+      ]
+    },
+    "I. Saibari": {
+      "goals": 1,
+      "teams": [
+        "Morocco"
+      ]
+    },
+    "B. Khoukhi": {
+      "goals": 1,
+      "teams": [
+        "Qatar"
+      ]
+    },
+    "Breel Embolo": {
+      "goals": 1,
+      "teams": [
+        "Switzerland"
+      ]
+    },
+    "A. Diallo": {
+      "goals": 1,
+      "teams": [
+        "Ivory Coast"
+      ]
+    },
+    "L. Comenencia": {
+      "goals": 1,
+      "teams": [
+        "Curaçao"
+      ]
+    },
+    "O. Rekik": {
+      "goals": 1,
+      "teams": [
+        "Tunisia"
+      ]
+    },
+    "Abdulelah Al-Amri": {
+      "goals": 1,
+      "teams": [
+        "Saudi Arabia"
+      ]
+    },
+    "Maximiliano Araújo": {
+      "goals": 1,
+      "teams": [
+        "Uruguay"
+      ]
+    },
+    "I. Mbaye": {
+      "goals": 1,
+      "teams": [
+        "Senegal"
+      ]
+    },
+    "Aymen Hussein": {
+      "goals": 1,
+      "teams": [
+        "Iraq"
+      ]
+    },
+    "Ali Avlvan": {
+      "goals": 1,
+      "teams": [
+        "Jordan"
+      ]
+    },
+    "J. Neves": {
+      "goals": 1,
+      "teams": [
+        "Portugal"
+      ]
+    },
+    "Y. Wissa": {
+      "goals": 1,
+      "teams": [
+        "Democratic Republic of the Congo"
+      ]
+    },
+    "Abas Bk Fiz Allh Af": {
+      "goals": 1,
+      "teams": [
+        "Uzbekistan"
+      ]
+    },
+    "Kalb Iirnki": {
+      "goals": 1,
+      "teams": [
+        "Ghana"
+      ]
+    },
+    "Luis Romo": {
+      "goals": 1,
+      "teams": [
+        "Mexico"
+      ]
+    },
+    "Armin Mhmich": {
+      "goals": 1,
+      "teams": [
+        "Bosnia and Herzegovina"
+      ]
+    },
+    "‫mikhal Sadilk 6": {
+      "goals": 1,
+      "teams": [
+        "Czech Republic"
+      ]
+    },
+    "Asmaail Saibari": {
+      "goals": 1,
+      "teams": [
+        "Morocco"
+      ]
+    },
+    "Matías Galarza": {
+      "goals": 1,
+      "teams": [
+        "Paraguay"
+      ]
+    },
+    "Franck Kessié": {
+      "goals": 1,
+      "teams": [
+        "Ivory Coast"
+      ]
+    },
+    "Fin Svrman": {
+      "goals": 1,
+      "teams": [
+        "New Zealand"
+      ]
+    },
+    "Al Rashdan": {
+      "goals": 1,
+      "teams": [
+        "Jordan"
+      ]
+    },
+    "Ante Budimir": {
+      "goals": 1,
+      "teams": [
+        "Croatia"
+      ]
+    },
+    "Dnil Mvnvz": {
+      "goals": 1,
+      "teams": [
+        "Colombia"
+      ]
+    },
+    "Taplv Maskv": {
+      "goals": 1,
+      "teams": [
+        "South Africa"
+      ]
+    },
+    "Hassan Al-Haydos": {
+      "goals": 1,
+      "teams": [
+        "Qatar"
+      ]
+    },
+    "Prvmis Divid": {
+      "goals": 1,
+      "teams": [
+        "Canada"
+      ]
+    },
+    "Leroy Sané": {
+      "goals": 1,
+      "teams": [
+        "Germany"
+      ]
+    },
+    "Daizen Maeda": {
+      "goals": 1,
+      "teams": [
+        "Japan"
+      ]
+    },
+    "Hazm Mstvri": {
+      "goals": 1,
+      "teams": [
+        "Tunisia"
+      ]
+    },
+    "Thelo Aasgaard": {
+      "goals": 1,
+      "teams": [
+        "Norway"
+      ]
+    },
+    "Mahmoud Saber": {
+      "goals": 1,
+      "teams": [
+        "Egypt"
+      ]
+    },
+    "Ramin Rezaeian": {
+      "goals": 1,
+      "teams": [
+        "Iran"
+      ]
+    },
+    "Ali Jast": {
+      "goals": 1,
+      "teams": [
+        "New Zealand"
+      ]
+    },
+    "Álex Baena": {
+      "goals": 1,
+      "teams": [
+        "Spain"
+      ]
+    },
+    "Drik Lvkasn": {
+      "goals": 1,
+      "teams": [
+        "Ghana"
+      ]
+    },
+    "Mvsi Altmari": {
+      "goals": 1,
+      "teams": [
+        "Jordan"
+      ]
+    },
+    "Aldvr Shvmvrvdvf": {
+      "goals": 1,
+      "teams": [
+        "Uzbekistan"
+      ]
+    },
+    "Astfan Avstakviv": {
+      "goals": 1,
+      "teams": [
+        "Canada"
+      ]
+    },
+    "Kai Havertz": {
+      "goals": 1,
+      "teams": [
+        "Germany"
+      ]
+    },
+    "Khvliv Ansisv": {
+      "goals": 1,
+      "teams": [
+        "Paraguay"
+      ]
+    },
+    "Kvdi Khakpv": {
+      "goals": 1,
+      "teams": [
+        "Netherlands"
+      ]
+    },
+    "Issa Diop": {
+      "goals": 1,
+      "teams": [
+        "Morocco"
+      ]
+    },
+    "Kaishū Sano": {
+      "goals": 1,
+      "teams": [
+        "Japan"
+      ]
+    },
+    "Amad Diallo": {
+      "goals": 1,
+      "teams": [
+        "Ivory Coast"
+      ]
+    },
+    "Braian Sipnga": {
+      "goals": 1,
+      "teams": [
+        "Democratic Republic of the Congo"
+      ]
+    },
+    "Gvnchalv Ramvs": {
+      "goals": 1,
+      "teams": [
+        "Portugal"
+      ]
+    },
+    "Ivan Perišić": {
+      "goals": 1,
+      "teams": [
+        "Croatia"
+      ]
+    },
+    "Jan Arias": {
+      "goals": 1,
+      "teams": [
+        "Colombia"
+      ]
+    },
+    "Jvlian Kviinvnz": {
+      "goals": 1,
+      "teams": [
+        "Mexico"
+      ]
+    },
+    "Mikel Merino": {
+      "goals": 1,
+      "teams": [
+        "Spain"
+      ]
+    },
+    "Malik Tillman": {
+      "goals": 1,
+      "teams": [
+        "United States"
+      ]
+    }
+  },
+  "team_scorers": {
+    "Mexico": {
+      "“J. Quiñones 9'”": 1,
+      "”R. Jiménez 67'”": 1,
+      "Luis Romo": 1,
+      "Jvlian Kviinvnz": 1
+    },
+    "Czech Republic": {
+      "L. Krejčí": 1,
+      "‫mikhal Sadilk 6": 1
+    },
+    "Canada": {
+      "C. Larin": 1,
+      "Prvmis Divid": 1,
+      "Astfan Avstakviv": 1
+    },
+    "Bosnia and Herzegovina": {
+      "Jovo Lukić": 1,
+      "Armin Mhmich": 1
+    },
+    "Paraguay": {
+      "Maurício": 1,
+      "Matías Galarza": 1,
+      "Khvliv Ansisv": 1
+    },
+    "Scotland": {
+      "J. McGinn": 1
+    },
+    "Brazil": {
+      "V. Júnior": 1
+    },
+    "Morocco": {
+      "I. Saibari": 1,
+      "Asmaail Saibari": 1,
+      "Issa Diop": 1
+    },
+    "Qatar": {
+      "B. Khoukhi": 1,
+      "Hassan Al-Haydos": 1
+    },
+    "Switzerland": {
+      "Breel Embolo": 1
+    },
+    "Ivory Coast": {
+      "A. Diallo": 1,
+      "Franck Kessié": 1,
+      "Amad Diallo": 1
+    },
+    "Curaçao": {
+      "L. Comenencia": 1
+    },
+    "Tunisia": {
+      "O. Rekik": 1,
+      "Hazm Mstvri": 1
+    },
+    "Belgium": {
+      "Mohamed Hany": 1
+    },
+    "Egypt": {
+      "Emam Ashour": 2,
+      "Mahmoud Saber": 1
+    },
+    "Saudi Arabia": {
+      "Abdulelah Al-Amri": 1
+    },
+    "Uruguay": {
+      "Maximiliano Araújo": 1
+    },
+    "Senegal": {
+      "I. Mbaye": 1
+    },
+    "Iraq": {
+      "Aymen Hussein": 1
+    },
+    "Jordan": {
+      "Ali Avlvan": 1,
+      "Al Rashdan": 1,
+      "Mvsi Altmari": 1
+    },
+    "Portugal": {
+      "J. Neves": 1,
+      "Gvnchalv Ramvs": 1
+    },
+    "Democratic Republic of the Congo": {
+      "Y. Wissa": 1,
+      "Braian Sipnga": 1
+    },
+    "Uzbekistan": {
+      "Abas Bk Fiz Allh Af": 1,
+      "Aldvr Shvmvrvdvf": 1
+    },
+    "Ghana": {
+      "Kalb Iirnki": 1,
+      "Drik Lvkasn": 1
+    },
+    "Sweden": {
+      "Anthony Elanga": 2
+    },
+    "New Zealand": {
+      "Fin Svrman": 1,
+      "Ali Jast": 1
+    },
+    "Croatia": {
+      "Ante Budimir": 1,
+      "Ivan Perišić": 1
+    },
+    "Colombia": {
+      "Dnil Mvnvz": 1,
+      "Jan Arias": 1
+    },
+    "South Africa": {
+      "Taplv Maskv": 1
+    },
+    "Germany": {
+      "Leroy Sané": 1,
+      "Kai Havertz": 1
+    },
+    "Japan": {
+      "Daizen Maeda": 1,
+      "Kaishū Sano": 1
+    },
+    "Norway": {
+      "Thelo Aasgaard": 1
+    },
+    "Iran": {
+      "Ramin Rezaeian": 1
+    },
+    "Spain": {
+      "Álex Baena": 1,
+      "Mikel Merino": 1
+    },
+    "Netherlands": {
+      "Kvdi Khakpv": 1
+    },
+    "Australia": {
+      "Mohamed Hany": 1
+    },
+    "United States": {
+      "Malik Tillman": 1
+    }
+  }
+}
