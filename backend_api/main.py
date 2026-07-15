@@ -649,21 +649,10 @@ def _build_tree(selected_date: Optional[str] = None) -> Dict:
                 except (ValueError, TypeError):
                     pass
 
-    # 3) Build bracket rounds from completed + predicted knockout matches
-    # Use date-specific predictions if a date is selected
+    # 3) Use full model predictions (trained with historical data) for ALL views
+    # This ensures consistency between panorama and day view predictions
     if selected_date is not None:
-        cache_key = f"date_{selected_date}"
-        if cache_key not in _date_prediction_cache:
-            try:
-                filtered = _filter_matches_by_date(selected_date)
-                date_pred = TournamentPredictor(calibrated_config, market_values=market_values)
-                date_pred.train(filtered)
-                _date_prediction_cache[cache_key] = date_pred.predict_all()
-                print(f"  [DATE] Generated {len(_date_prediction_cache[cache_key])} predictions for {selected_date}")
-            except Exception as e:
-                print(f"  [DATE] Failed for {selected_date}: {e}")
-                _date_prediction_cache[cache_key] = all_predictions.copy()
-        preds = _date_prediction_cache[cache_key].sort_values("match_id")
+        preds = all_predictions.sort_values("match_id") if all_predictions is not None and not all_predictions.empty else pd.DataFrame()
     else:
         preds = all_predictions.sort_values("match_id") if all_predictions is not None else pd.DataFrame()
 
@@ -814,12 +803,11 @@ def _build_tree(selected_date: Optional[str] = None) -> Dict:
                     if not pm.empty:
                         pr = pm.iloc[0]
 
-                # Use actual score only for completed matches (not scheduled/predicted)
+                # Use actual score for matches not in predictions (completed matches)
                 row_hs = str(row.get("home_score", ""))
                 row_as = str(row.get("away_score", ""))
-                is_completed = str(row.get("status", "")).lower() in ("completed", "finished", "ft", "final")
                 actual_score = None
-                if is_completed and row_hs and row_as and row_hs.isdigit() and row_as.isdigit():
+                if pr is None and row_hs and row_as and row_hs.isdigit() and row_as.isdigit():
                     actual_score = f"{int(row_hs)}-{int(row_as)}"
 
                 # Use resolved team names from prediction (handles Winner/Loser Match placeholders)
@@ -1139,18 +1127,26 @@ def _patch_match_results(matches_df: pd.DataFrame) -> pd.DataFrame:
     patches = [
         # Semi-final 2026-07-14: France vs Spain -> Spain won 2-0
         {"match_id": 101, "home_score": 0, "away_score": 2},
+        # Semi-final 2026-07-15: England vs Argentina -> NOT PLAYED YET, clear fake API data
+        {"match_id": 102, "home_score": None, "away_score": None, "status": "scheduled"},
     ]
     for p in patches:
         mask = matches_df["match_id"].astype(str) == str(p["match_id"])
         if mask.any():
             idx = matches_df[mask].index[0]
-            old_h = int(matches_df.at[idx, "home_score"])
-            old_a = int(matches_df.at[idx, "away_score"])
-            matches_df.at[idx, "home_score"] = p["home_score"]
-            matches_df.at[idx, "away_score"] = p["away_score"]
+            old_h = matches_df.at[idx, "home_score"]
+            old_a = matches_df.at[idx, "away_score"]
+            new_status = p.get("status", "completed")
+            if p["home_score"] is not None:
+                matches_df.at[idx, "home_score"] = p["home_score"]
+                matches_df.at[idx, "away_score"] = p["away_score"]
+            else:
+                # Clear scores and mark as scheduled (unplayed match with fake API data)
+                matches_df.at[idx, "home_score"] = 0
+                matches_df.at[idx, "away_score"] = 0
             if "status" in matches_df.columns:
-                matches_df.at[idx, "status"] = "completed"
-            print(f"    [PATCH] Match {p['match_id']}: {old_h}-{old_a} -> {p['home_score']}-{p['away_score']}")
+                matches_df.at[idx, "status"] = new_status
+            print(f"    [PATCH] Match {p['match_id']}: {old_h}-{old_a} -> {p['home_score']}-{p['away_score']} (status={new_status})")
         else:
             print(f"    [PATCH] Match {p['match_id']} not found, skipping")
     return matches_df
