@@ -10,6 +10,7 @@ interface Props {
   onRun: () => void;
   onExport: () => void;
   onRefresh: () => void;
+  onDataUpdate: () => void;
   hasEdits: boolean;
   loading: boolean;
   onHome: () => void;
@@ -25,6 +26,7 @@ export default function TopBar({
   onRun,
   onExport,
   onRefresh,
+  onDataUpdate,
   hasEdits,
   loading,
   onHome,
@@ -110,14 +112,24 @@ export default function TopBar({
         </button>
       )}
 
+      {/* Data Update - re-fetch from API */}
+      <button
+        onClick={onDataUpdate}
+        disabled={loading}
+        className="rounded-lg border border-[#d4af37] bg-[#d4af37]/10 px-3 py-1.5 text-sm text-[#f0c040] transition-colors hover:bg-[#d4af37]/20 disabled:opacity-40"
+        title="重新采集数据并更新预测"
+      >
+        📡 {loading ? '更新中...' : '数据更新'}
+      </button>
+
       {/* Refresh */}
       <button
         onClick={onRefresh}
         disabled={loading}
         className="rounded-lg border border-[#4a6fa5] px-3 py-1.5 text-sm text-[#4a6fa5] transition-colors hover:bg-[#4a6fa5]/20 disabled:opacity-40"
-        title="刷新数据"
+        title="刷新显示"
       >
-        🔄 {loading ? '刷新中...' : '刷新'}
+        🔄 刷新
       </button>
 
       {/* Export */}

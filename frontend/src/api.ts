@@ -33,6 +33,12 @@ export function fetchSchedule(): Promise<ScheduleResponse> {
   return fetchJson<ScheduleResponse>(`${BASE}/schedule`);
 }
 
+export function postRefreshData(): Promise<{ status: string; message: string }> {
+  return fetchJson<{ status: string; message: string }>(`${BASE}/refresh-data`, {
+    method: "POST",
+  });
+}
+
 export function postSimulate(
   mode: ViewMode,
   date: string | undefined,

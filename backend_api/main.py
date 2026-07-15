@@ -1561,6 +1561,39 @@ def simulate(req: SimulateRequest):
         matches_df = saved_matches
 
 
+@app.post("/api/refresh-data")
+def refresh_data():
+    """Clear cache and re-fetch match data from API, then retrain model."""
+    global predictor, matches_df, team_stats_df, skill, all_predictions, _date_prediction_cache
+    try:
+        # Clear caches
+        _date_prediction_cache.clear()
+        if skill is not None:
+            skill.clear_cache()
+
+        # Re-collect data
+        data = skill.collect_all()
+        matches_df = data["matches"]
+        team_stats_df = data["team_stats"]
+
+        # Re-train and re-predict
+        matches_df_2026 = matches_df.copy()
+        training_df = _merge_historical_data(matches_df)
+        predictor = TournamentPredictor(calibrated_config, market_values=market_values)
+        predictor.train(training_df)
+        matches_df = matches_df_2026
+        all_predictions = predictor.predict_all()
+
+        # Apply betting odds calibration
+        odds_df = _load_betting_odds()
+        if odds_df is not None:
+            all_predictions = _calibrate_with_odds(all_predictions, odds_df, matches_df)
+
+        return {"status": "ok", "message": f"Data refreshed. {len(all_predictions)} predictions generated."}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Refresh failed: {str(e)}")
+
+
 @app.get("/api/teams")
 def list_teams():
     """Return all tournament teams (for edit dropdown)."""

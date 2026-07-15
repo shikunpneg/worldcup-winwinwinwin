@@ -15,6 +15,7 @@ import {
   fetchTeams,
   fetchSchedule,
   postSimulate,
+  postRefreshData,
 } from "./api";
 import TopBar from "./components/TopBar";
 import BracketTree from "./components/BracketTree";
@@ -203,6 +204,27 @@ export default function App() {
     applyEdits();
   }
 
+  /* Data update: re-fetch from API, retrain model, reload */
+  async function handleDataUpdate() {
+    setLoading(true);
+    setError(null);
+    try {
+      const result = await postRefreshData();
+      // Re-load schedule and tree data
+      const [scheduleRes] = await Promise.all([fetchSchedule()]);
+      setAvailableDates(scheduleRes.schedule);
+      const data =
+        mode === "panorama"
+          ? await fetchPanorama()
+          : await fetchToday(selectedDate);
+      setTreeData(data);
+    } catch (e: any) {
+      setError(e.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   function handleExport() {
     import("html2canvas").then((mod) => {
       const el = document.getElementById("tree-container");
@@ -256,6 +278,7 @@ export default function App() {
         onExport={handleExport}
         onRun={handleRun}
         onRefresh={loadTree}
+        onDataUpdate={handleDataUpdate}
         hasEdits={hasEdits}
         loading={loading}
         onHome={() => setMode("poster")}
