@@ -814,11 +814,12 @@ def _build_tree(selected_date: Optional[str] = None) -> Dict:
                     if not pm.empty:
                         pr = pm.iloc[0]
 
-                # Use actual score from data (takes priority over prediction)
+                # Use actual score only for completed matches (not scheduled/predicted)
                 row_hs = str(row.get("home_score", ""))
                 row_as = str(row.get("away_score", ""))
+                is_completed = str(row.get("status", "")).lower() in ("completed", "finished", "ft", "final")
                 actual_score = None
-                if row_hs and row_as and row_hs.isdigit() and row_as.isdigit():
+                if is_completed and row_hs and row_as and row_hs.isdigit() and row_as.isdigit():
                     actual_score = f"{int(row_hs)}-{int(row_as)}"
 
                 # Use resolved team names from prediction (handles Winner/Loser Match placeholders)
@@ -1147,6 +1148,8 @@ def _patch_match_results(matches_df: pd.DataFrame) -> pd.DataFrame:
             old_a = int(matches_df.at[idx, "away_score"])
             matches_df.at[idx, "home_score"] = p["home_score"]
             matches_df.at[idx, "away_score"] = p["away_score"]
+            if "status" in matches_df.columns:
+                matches_df.at[idx, "status"] = "completed"
             print(f"    [PATCH] Match {p['match_id']}: {old_h}-{old_a} -> {p['home_score']}-{p['away_score']}")
         else:
             print(f"    [PATCH] Match {p['match_id']} not found, skipping")
