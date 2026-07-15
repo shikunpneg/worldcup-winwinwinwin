@@ -1129,7 +1129,7 @@ export default function BracketTree({ data, onEditTeam, onHoverTeam }: Props) {
 
   return (
 
-    <div className={`w-full ${zoomMode ? "overflow-hidden" : "overflow-auto"}`} style={{ position: "relative", minHeight: "400px" }}>
+    <div className="w-full overflow-auto" style={{ position: "relative", minHeight: "400px" }}>
 
       <svg ref={svgRef} style={{ width: "100%", display: "block" }} />
 
