@@ -1102,6 +1102,33 @@ def _calibrate_with_odds(pred_df: pd.DataFrame, odds_df: Optional[pd.DataFrame],
 
 
 # ============================================================
+#  MATCH RESULT PATCH (correct known API mismatches)
+# ============================================================
+
+def _patch_match_results(matches_df: pd.DataFrame) -> pd.DataFrame:
+    """Apply manual corrections to match results when the API data is stale.
+
+    Add entries here when a match completes but the API hasn't been updated.
+    """
+    patches = [
+        # Semi-final 2026-07-14: France vs Spain -> Spain won
+        {"match_id": 101, "home_score": 1, "away_score": 2},
+    ]
+    for p in patches:
+        mask = matches_df["match_id"].astype(str) == str(p["match_id"])
+        if mask.any():
+            idx = matches_df[mask].index[0]
+            old_h = int(matches_df.at[idx, "home_score"])
+            old_a = int(matches_df.at[idx, "away_score"])
+            matches_df.at[idx, "home_score"] = p["home_score"]
+            matches_df.at[idx, "away_score"] = p["away_score"]
+            print(f"    [PATCH] Match {p['match_id']}: {old_h}-{old_a} -> {p['home_score']}-{p['away_score']}")
+        else:
+            print(f"    [PATCH] Match {p['match_id']} not found, skipping")
+    return matches_df
+
+
+# ============================================================
 #  HISTORICAL DATA LOADING
 # ============================================================
 
@@ -1215,6 +1242,9 @@ def startup():
         matches_df = data["matches"]
         team_stats_df = data["team_stats"]
 
+        # Patch known incorrect API results
+        matches_df = _patch_match_results(matches_df)
+
         # Save original 2026 data for bracket display; use merged data for training
         matches_df_2026 = matches_df.copy()
         training_df = _merge_historical_data(matches_df)
@@ -1249,6 +1279,7 @@ def startup():
     matches_df = data["matches"]
     team_stats_df = data["team_stats"]
     market_values = skill.fetch_market_values()
+    matches_df = _patch_match_results(matches_df)
     matches_df_2026 = matches_df.copy()
 
     # Merge historical data for training only
