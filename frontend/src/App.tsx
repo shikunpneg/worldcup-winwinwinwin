@@ -255,6 +255,7 @@ export default function App() {
         onReset={handleReset}
         onExport={handleExport}
         onRun={handleRun}
+        onRefresh={loadTree}
         hasEdits={hasEdits}
         loading={loading}
         onHome={() => setMode("poster")}

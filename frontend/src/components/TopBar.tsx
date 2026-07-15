@@ -9,6 +9,7 @@ interface Props {
   onReset: () => void;
   onRun: () => void;
   onExport: () => void;
+  onRefresh: () => void;
   hasEdits: boolean;
   loading: boolean;
   onHome: () => void;
@@ -23,6 +24,7 @@ export default function TopBar({
   onReset,
   onRun,
   onExport,
+  onRefresh,
   hasEdits,
   loading,
   onHome,
@@ -107,6 +109,16 @@ export default function TopBar({
           重置
         </button>
       )}
+
+      {/* Refresh */}
+      <button
+        onClick={onRefresh}
+        disabled={loading}
+        className="rounded-lg border border-[#4a6fa5] px-3 py-1.5 text-sm text-[#4a6fa5] transition-colors hover:bg-[#4a6fa5]/20 disabled:opacity-40"
+        title="刷新数据"
+      >
+        🔄 {loading ? '刷新中...' : '刷新'}
+      </button>
 
       {/* Export */}
       <button
