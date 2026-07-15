@@ -248,6 +248,7 @@ def _build_match_response(
     pred: Optional[Dict] = None,
     is_today: bool = False,
     is_future: bool = False,
+    actual_score: Optional[str] = None,
 ) -> Dict:
     """Build a single match response dict."""
     home_node = _team_node(home_name)
@@ -264,7 +265,23 @@ def _build_match_response(
         "feeds_from": _compute_feeds_from(home_name, away_name, stage),
     }
 
-    if pred is not None:
+    # Actual score from data takes priority over prediction
+    if actual_score:
+        result["score"] = actual_score
+        # Compute winner from actual score
+        parts = actual_score.split("-")
+        hs, aw = int(parts[0]), int(parts[1])
+        if hs > aw:
+            result["winner"] = home_name
+        elif aw > hs:
+            result["winner"] = away_name
+        else:
+            result["winner"] = ""
+        result["probabilities"] = {"home_win": 1, "draw": 0, "away_win": 0}
+        result["home_win_prob"] = 1 if hs > aw else (0 if aw > hs else 0)
+        result["away_win_prob"] = 1 if aw > hs else (0 if hs > aw else 0)
+        result["penalty_winner"] = ""
+    elif pred is not None:
         result["score"] = pred.get("predicted_score", "?-?")
         result["probabilities"] = {
             "home_win": round(pred["home_win_prob"], 4),
@@ -797,6 +814,13 @@ def _build_tree(selected_date: Optional[str] = None) -> Dict:
                     if not pm.empty:
                         pr = pm.iloc[0]
 
+                # Use actual score from data (takes priority over prediction)
+                row_hs = str(row.get("home_score", ""))
+                row_as = str(row.get("away_score", ""))
+                actual_score = None
+                if row_hs and row_as and row_hs.isdigit() and row_as.isdigit():
+                    actual_score = f"{int(row_hs)}-{int(row_as)}"
+
                 # Use resolved team names from prediction (handles Winner/Loser Match placeholders)
                 today_home = str(pr["home_team"]) if pr is not None else home
                 today_away = str(pr["away_team"]) if pr is not None else away
@@ -806,6 +830,7 @@ def _build_tree(selected_date: Optional[str] = None) -> Dict:
                     home_name=today_home, away_name=today_away,
                     pred=pr.to_dict() if pr is not None else None,
                     is_today=True, is_future=pr is None,
+                    actual_score=actual_score,
                 ))
             if today_items:
                 rounds.append({"name": f"Today ({selected_date[5:]})", "today": True, "matches": today_items})
@@ -1111,8 +1136,8 @@ def _patch_match_results(matches_df: pd.DataFrame) -> pd.DataFrame:
     Add entries here when a match completes but the API hasn't been updated.
     """
     patches = [
-        # Semi-final 2026-07-14: France vs Spain -> Spain won
-        {"match_id": 101, "home_score": 1, "away_score": 2},
+        # Semi-final 2026-07-14: France vs Spain -> Spain won 2-0
+        {"match_id": 101, "home_score": 0, "away_score": 2},
     ]
     for p in patches:
         mask = matches_df["match_id"].astype(str) == str(p["match_id"])
