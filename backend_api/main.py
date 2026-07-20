@@ -1589,6 +1589,9 @@ def refresh_data():
         if odds_df is not None:
             all_predictions = _calibrate_with_odds(all_predictions, odds_df, matches_df)
 
+        # Save model state so restart doesn't lose predictions
+        _save_model_state()
+
         return {"status": "ok", "message": f"Data refreshed. {len(all_predictions)} predictions generated."}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Refresh failed: {str(e)}")
