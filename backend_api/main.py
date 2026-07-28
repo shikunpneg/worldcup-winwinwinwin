@@ -1564,19 +1564,28 @@ def simulate(req: SimulateRequest):
 @app.post("/api/refresh-data")
 def refresh_data():
     """Clear cache and re-fetch match data from API, then retrain model."""
-    global predictor, matches_df, team_stats_df, skill, all_predictions, _date_prediction_cache
+    global predictor, matches_df, team_stats_df, skill, all_predictions, _date_prediction_cache, calibrated_config
     try:
         # Clear caches
         _date_prediction_cache.clear()
         if skill is not None:
             skill.clear_cache()
 
+        # Re-apply Bayesian-optimized parameters (cache may have old values)
+        calibrated_config.K = 7.9
+        calibrated_config.home_advantage = 7.0
+        calibrated_config.elo_spread = 0.008
+        calibrated_config.draw_intercept = 0.956
+
         # Re-collect data
         data = skill.collect_all()
         matches_df = data["matches"]
         team_stats_df = data["team_stats"]
 
-        # Re-train and re-predict
+        # Patch known incorrect API results (France 0-2 Spain, etc.)
+        matches_df = _patch_match_results(matches_df)
+
+        # Re-train and re-predict (exact same flow as startup)
         matches_df_2026 = matches_df.copy()
         training_df = _merge_historical_data(matches_df)
         predictor = TournamentPredictor(calibrated_config, market_values=market_values)
@@ -1589,7 +1598,7 @@ def refresh_data():
         if odds_df is not None:
             all_predictions = _calibrate_with_odds(all_predictions, odds_df, matches_df)
 
-        # Save model state so restart doesn't lose predictions
+        # Save model state for future restarts
         _save_model_state()
 
         return {"status": "ok", "message": f"Data refreshed. {len(all_predictions)} predictions generated."}
