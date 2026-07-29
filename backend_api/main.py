@@ -631,7 +631,7 @@ def _build_tree(selected_date: Optional[str] = None) -> Dict:
       - Semi-finals (predicted)
       - Third Place / Final (predicted)
     """
-    global matches_df, all_predictions, calibrated_config, market_values, _date_prediction_cache
+    global matches_df, all_predictions, calibrated_config, market_values, _date_prediction_cache, predictor
 
     if all_predictions is None or all_predictions.empty:
         return {"date": selected_date or "all", "groups": [], "rounds": []}
@@ -803,14 +803,20 @@ def _build_tree(selected_date: Optional[str] = None) -> Dict:
                     if not pm.empty:
                         pr = pm.iloc[0]
 
-                # Today section always shows prediction scores (not actual API data)
+                # If prediction not in preds, generate one on the fly using current model
+                if pr is None and predictor is not None and predictor.predictor is not None:
+                    try:
+                        pr = predictor.predictor.predict_score(home, away, stage=stag)
+                    except Exception:
+                        pr = None
+
                 today_home = str(pr["home_team"]) if pr is not None else home
                 today_away = str(pr["away_team"]) if pr is not None else away
 
                 today_items.append(_build_match_response(
                     match_id=mid, stage=stag, datetime_str=dt,
                     home_name=today_home, away_name=today_away,
-                    pred=pr.to_dict() if pr is not None else None,
+                    pred=pr if pr is not None else None,
                     is_today=True, is_future=pr is None,
                     actual_score=None,
                 ))
