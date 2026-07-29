@@ -803,14 +803,7 @@ def _build_tree(selected_date: Optional[str] = None) -> Dict:
                     if not pm.empty:
                         pr = pm.iloc[0]
 
-                # Use actual score for matches not in predictions (completed matches)
-                row_hs = str(row.get("home_score", ""))
-                row_as = str(row.get("away_score", ""))
-                actual_score = None
-                if pr is None and row_hs and row_as and row_hs.isdigit() and row_as.isdigit():
-                    actual_score = f"{int(row_hs)}-{int(row_as)}"
-
-                # Use resolved team names from prediction (handles Winner/Loser Match placeholders)
+                # Today section always shows prediction scores (not actual API data)
                 today_home = str(pr["home_team"]) if pr is not None else home
                 today_away = str(pr["away_team"]) if pr is not None else away
 
@@ -819,7 +812,7 @@ def _build_tree(selected_date: Optional[str] = None) -> Dict:
                     home_name=today_home, away_name=today_away,
                     pred=pr.to_dict() if pr is not None else None,
                     is_today=True, is_future=pr is None,
-                    actual_score=actual_score,
+                    actual_score=None,
                 ))
             if today_items:
                 rounds.append({"name": f"Today ({selected_date[5:]})", "today": True, "matches": today_items})
