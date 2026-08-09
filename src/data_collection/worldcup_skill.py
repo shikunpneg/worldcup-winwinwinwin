@@ -34,6 +34,9 @@ class WorldCupDataSkill:
         self.cache = SimpleCache(ttl=cache_ttl)
         self.api = ApiClient()
         ensure_dir(self.data_dir)
+        # Secondary fallback: git-tracked offline data
+        self.offline_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                        "..", "..", "data", "offline")
 
     def collect_all(self) -> Dict[str, pd.DataFrame]:
         """Collect all data and return as a dictionary of DataFrames."""
@@ -55,11 +58,25 @@ class WorldCupDataSkill:
         }
 
     def fetch_matches(self) -> pd.DataFrame:
-        """Fetch all matches from the API."""
+        """Fetch all matches from the API, falling back to local CSV cache."""
         cached = self.cache.get("matches")
-        if cached is not None:
+        if cached is not None and not cached.empty:
             print("[INFO] Returning cached matches data.")
             return cached
+
+        # Try local CSV cache first (for offline / migrated deployments)
+        local_csv = os.path.join(self.data_dir, "matches.csv")
+        if not os.path.exists(local_csv) or os.path.getsize(local_csv) == 0:
+            local_csv = os.path.join(self.offline_dir, "matches.csv")
+        if os.path.exists(local_csv):
+            try:
+                df = pd.read_csv(local_csv)
+                if not df.empty:
+                    print(f"[INFO] Loaded {len(df)} matches from local cache: {local_csv}")
+                    self.cache.set("matches", df)
+                    return df
+            except Exception as e:
+                print(f"[WARN] Failed to load local matches cache: {e}")
 
         print("[INFO] Fetching matches from API...")
         data = self.api.get_games()
